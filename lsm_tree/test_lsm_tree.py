@@ -63,9 +63,11 @@ def test_sstables_are_length_1_after_compaction():
 
 
 
+    assert len(lsm.sstables) == 3
 
+    lsm.compact()
 
-
-
-
+    assert len(lsm.sstables) == 1
+    assert lsm.get("key1") is None
+    assert lsm.get("key2") == "v2" 
 
