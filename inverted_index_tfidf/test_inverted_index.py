@@ -42,3 +42,21 @@ def test_idf_ranking_rare_terms_score_higher():
     common_score = common_results[0].score
 
     assert rose_score > common_score
+
+def test_multi_term_query_ranking():
+    index = InvertedIndex()
+    index.add_document("doc1", "soup recipe")
+    index.add_document("doc2", "mashed potatoes recipe")
+    index.add_document("doc3", "ice cream recipe")
+    index.add_document("doc4", "ice cream cake recipe")
+    index.add_document("doc5", "asparagus recipe")
+
+    results = index.search("ice cream cake recipe")
+
+    assert len(results) == 5
+    assert results[0].doc_id == "doc4"
+
+    scores = {r.doc_id: r.score for r in results}
+    assert scores["doc4"] > scores["doc3"]
+    assert scores["doc3"] > scores["doc1"]
+
