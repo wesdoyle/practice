@@ -1,4 +1,10 @@
-from typing import Optional
+from typing import Optional, NamedTuple
+
+
+class Entry(NamedTuple):
+    key: str
+    value: str
+    sequence: int
 
 
 class LSMTree:
@@ -6,28 +12,46 @@ class LSMTree:
 
     def __init__(self, memtable_size_limit=10):
         self.memtable_size_limit = memtable_size_limit
-        self._memtable: dict[str,str] = dict()
-        self.sstables: list[dict[str,str]] = []
+        self._memtable: dict[str, Entry] = dict()
+        self.sstables: list[list[Entry]] = []
+        self.next_seq = 1
 
-    def put(self, key: str, val: str):
-        self._memtable[key] = val
+    def put(self, key: str, val: str) -> None:
+        entry = Entry(key, val, self.next_seq)
+        self._memtable[key] = entry
+        self.next_seq += 1
+
         if len(self._memtable) >= self.memtable_size_limit:
             self._flush_memtable()
 
+        return None
+
     def get(self, key: str) -> Optional[str]:
         if key in self._memtable:
-            value = self._memtable[key]
-            return None if value == self.TOMBSTONE else value
+            entry = self._memtable[key]
+
+            return None if entry.value == self.TOMBSTONE else entry.value
 
         for sstable in reversed(self.sstables):
-            if key in sstable:
-                value = sstable[key]
-                return None if value == self.TOMBSTONE else value
+            latest_entry = None
+
+            for entry in reversed(sstable):
+                if entry.key == key:
+                    latest_entry = entry
+                    break
+
+            if latest_entry:
+                return (
+                    None if latest_entry.value == self.TOMBSTONE else latest_entry.value
+                )
 
         return None
 
     def delete(self, key: str) -> None:
-        self._memtable[key] = self.TOMBSTONE
+        entry = Entry(key, self.TOMBSTONE, self.next_seq)
+        self._memtable[key] = entry
+        self.next_seq += 1
+
         if len(self._memtable) >= self.memtable_size_limit:
             self._flush_memtable()
 
@@ -35,44 +59,63 @@ class LSMTree:
         if len(self.sstables) <= 1:
             return None
 
-        merged_data: dict[str,str] = dict()
+        all_entries: list[Entry] = []
 
-        # process oldest to newest so newer values override
         for sstable in self.sstables:
-            for k, v in sstable.items():
-                merged_data[k] = v
+            all_entries.extend(sstable)
 
-        compacted_data = {
-                k: v
-                for k, v in merged_data.items()
-                if v != self.TOMBSTONE
-        }
+        all_entries.sort(key=lambda x: x.sequence)
 
-        self.sstables = [compacted_data] if compacted_data else []
+        latest_entries: dict[str, Entry] = dict()
+        for entry in all_entries:
+            latest_entries[entry.key] = entry
 
-    def scan(self, start_key: str, end_key: str) -> list[tuple[str,str]]:
+        # remove tombstones
+        compacted_entries = [
+            entry for entry in latest_entries.values() if entry.value != self.TOMBSTONE
+        ]
+
+        # sort by sequence
+        compacted_entries.sort(key=lambda x: x.sequence)
+
+        # replace sstables with the compacted copy
+        self.sstables = [compacted_entries] if compacted_entries else []
+
+    def scan(self, start_key: str, end_key: str) -> list[tuple[str, str]]:
         """scans a range of keys, returning sorted k-v pairs"""
-        results: dict[str,str] = dict()
+        results: list[Entry] = []
 
         # collect data from sstables (oldest first, newest overrides)
         for sstable in self.sstables:
-            for k, v in sstable.items():
-                if start_key <= k <= end_key:
-                    results[k] = v
+            for entry in sstable:
+                if start_key <= entry.key <= end_key:
+                    results.append(entry)
 
         # overwrite with current memtable data
-        for k, v in self._memtable.items():
-            if start_key <= k <= end_key:
-                results[k] = v
+        for entry in self._memtable.values():
+            if start_key <= entry.key <= end_key:
+                results.append(entry)
 
-        return [(k, v) for k, v in sorted(results.items()) if v != self.TOMBSTONE]
+        results.sort(key=lambda x: x.sequence)
 
+        latest_entries: dict[str, Entry] = dict()
 
+        for entry in results:
+            latest_entries[entry.key] = entry
+
+        sorted_results = [
+            (entry.key, entry.value)
+            for entry in sorted(latest_entries.values(), key=lambda e: e.key)
+            if entry.value != self.TOMBSTONE
+        ]
+
+        return sorted_results
 
     def _flush_memtable(self):
         if self._memtable:
-            sorted_data = dict(sorted(self.memtable.items()))
-            self.sstables.append(sorted_data)
+            entries = list(self.memtable.values())
+            entries.sort(key=lambda x: x.sequence)
+            self.sstables.append(entries)
             self._memtable.clear()
 
     @property

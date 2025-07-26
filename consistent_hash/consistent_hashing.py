@@ -2,6 +2,7 @@ import hashlib
 import bisect
 from typing import Optional
 
+
 class ConsistentHashRing:
     """
     Consistent hash ring implementation with virtual nodes and fault-tolerant key replication
@@ -15,7 +16,12 @@ class ConsistentHashRing:
         replication_factor (int): Number of distinct physical nodes each key is assigned to
     """
 
-    def __init__(self, nodes: Optional[list]=None, virtual_nodes:int=100, replication_factor:int=1) -> None:
+    def __init__(
+        self,
+        nodes: Optional[list] = None,
+        virtual_nodes: int = 100,
+        replication_factor: int = 1,
+    ) -> None:
         """
         Initialize the hash ring
 
@@ -34,9 +40,9 @@ class ConsistentHashRing:
             for node in nodes:
                 self.add_node(node)
 
-    def _hash(self, key:str) -> int:
+    def _hash(self, key: str) -> int:
         """Return an integer hash of the given string using SHA-256"""
-        return int(hashlib.sha256(key.encode('utf-8')).hexdigest(), 16)
+        return int(hashlib.sha256(key.encode("utf-8")).hexdigest(), 16)
 
     def add_node(self, node: str) -> None:
         """
@@ -53,8 +59,7 @@ class ConsistentHashRing:
             bisect.insort(self.sorted_keys, h)
         return None
 
-
-    def get_node(self, key: str|None) -> str | None:
+    def get_node(self, key: str | None) -> str | None:
         """
         Get the primary node responsible for a given key
 
@@ -100,7 +105,7 @@ class ConsistentHashRing:
             idx += 1
         return replicas
 
-    def remove_node(self, node:str|None) -> None:
+    def remove_node(self, node: str | None) -> None:
         """
         Remove a 'physical node' and all its virtual representations from the hash ring
 
