@@ -4,3 +4,9 @@
 > - E. F. Schumacher
 
 Interesting algorithms implemented for fun and practice, dependency-free, using TDD.
+
+
+| Project | Description |
+| --- | --- |
+| [Consistent Hash](./consistent_hash) | A simple implementation of a consistent hashing ring. |
+| [LSM Tree](./lsm_tree) | A simple implementation of a Log-Structured Merge-Tree. |
