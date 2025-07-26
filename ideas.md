@@ -1,5 +1,5 @@
 [x] consistent hashing
-[] lsm tree
+[x] lsm tree
 [] inverted index with ranking
 [] b+ tree
 [] skip list with probabilistic balancing
