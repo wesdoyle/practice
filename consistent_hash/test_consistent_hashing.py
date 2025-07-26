@@ -1,4 +1,4 @@
-from consistent_hashing import ConsistentHashRing 
+from .consistent_hashing import ConsistentHashRing 
 
 def test_single_node_always_selected():
     ring = ConsistentHashRing(nodes=["node1"], virtual_nodes=10, replication_factor=1)
