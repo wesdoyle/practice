@@ -23,7 +23,12 @@ jobs:
           pip install -e .
 
       - name: Run tests and generate coverage report
-        run: pytest --cov=consistent_hash --cov=inverted_index_tfidf --cov=lsm_tree --cov-report=xml
+        run: pytest --cov --cov-report=xml --junitxml=junit.xml -o junit_family=legacy
+
+      - name: Upload test reports to Codecov
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
