@@ -118,3 +118,31 @@ def test_remove_document():
 
     alt_results = index.search("foo")
     assert len(alt_results) == 1
+
+def test_get_stats():
+    index = InvertedIndex()
+    index.add_document("1", "vegetable gardening")
+    index.add_document("2", "flower gardening")
+    index.add_document("3", "diy gardening")
+    
+    stats = index.get_stats()
+    assert stats["total_documents"] == 3
+    assert stats["total_terms"] == 4
+    assert stats["vocab_size"] == len(index._index)
+
+
+def test_get_document_content():
+    index = InvertedIndex()
+    index.add_document("1", "vegetable gardening")
+    index.add_document("2", "flower gardening")
+    index.add_document("3", "diy gardening")
+    
+    doc1_content = index.get_document_content("1")
+    assert doc1_content == "vegetable gardening"
+
+    doc2_content = index.get_document_content("2")
+    assert doc2_content == "flower gardening"
+
+    doc3_content = index.get_document_content("3")
+    assert doc3_content == "diy gardening"
+

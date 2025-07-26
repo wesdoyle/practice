@@ -67,6 +67,16 @@ class InvertedIndex:
         scored_results.sort(key=lambda x: x.score, reverse=True)
         return scored_results[:max_results]
 
+    def get_stats(self):
+        return {
+            "total_documents": len(self._documents),
+            "total_terms": len(self._index),
+            "vocab_size": len(self._index)
+        }
+
+    def get_document_content(self, doc_id: str) -> str:
+        return self._documents[doc_id].content
+
     def _calculate_tfidf_score(self, doc_id: str, query_terms: list[str]) -> float:
         score = 0.0
         total_docs = len(self._documents)
