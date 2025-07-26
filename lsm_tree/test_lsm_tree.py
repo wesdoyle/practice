@@ -87,3 +87,22 @@ def test_can_scan_range():
     results = lsm.scan("k2", "k4")
     expected = [("k2", "v2"), ("k3", "v3"), ("k4", "v4")]
     assert results == expected
+
+def test_scan_range_with_sstables_and_deletions():
+    lsm = LSMTree(memtable_size_limit=2)
+    lsm.put("a", "1")
+    lsm.put("b", "2")  # flush
+    lsm.put("b", "updated")
+    lsm.put("c", "3")  # flush
+    lsm.delete("a")
+
+    results = lsm.scan("a", "z")
+    expected = [("b", "updated"), ("c", "3")]
+    assert results == expected
+
+
+
+
+
+
+
