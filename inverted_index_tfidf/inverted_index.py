@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from collections import defaultdict, Counter
+import re
 import math
 
 
@@ -96,4 +97,5 @@ class InvertedIndex:
 
     def _tokenize(self, text: str) -> list[str]:
         """Naive whitespace tokenization and lowercasing"""
-        return text.lower().split()
+        text = re.sub(r'[^\w\s]', ' ', text.lower())
+        return [token for token in text.split() if token]

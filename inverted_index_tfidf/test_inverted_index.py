@@ -146,3 +146,15 @@ def test_get_document_content():
     doc3_content = index.get_document_content("3")
     assert doc3_content == "diy gardening"
 
+def test_tokenization_edge_cases():
+    index = InvertedIndex()
+    index.add_document("1", "vegetable gardening!")
+    index.add_document("2", "flower gardening?")
+    index.add_document("3", "diy, gardening")
+
+    gardening_results = index.search("gardening")
+    assert len(gardening_results) == 3
+
+    caps_results = index.search("gardening")
+    assert len(caps_results) == 3
+
