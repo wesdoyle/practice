@@ -36,6 +36,20 @@ class InvertedIndex:
             self._index[term].add(doc_id)
             self._term_frequencies[doc_id][term] = count
 
+    def remove_document(self, doc_id: str) -> None:
+        if doc_id not in self._documents:
+            return None
+
+        for term in self._term_frequencies[doc_id]:
+            self._index[term].discard(doc_id)
+
+            if not self._index[term]:
+                del self._index[term]
+
+        del self._documents[doc_id]
+        del self._term_frequencies[doc_id]
+        del self._document_lengths[doc_id]
+
     def search(self, query: str, max_results: int = 10) -> list[SearchResult]:
         query_terms = self._tokenize(query)
         if not query_terms:

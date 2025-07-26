@@ -89,3 +89,32 @@ def test_non_matching_query_returns_empty_results():
     assert index.search("wow") == []
     assert index.search("ok") == []
 
+
+def test_update_document():
+    index = InvertedIndex()
+    index.add_document("doc1", "hello world")
+
+    results = index.search("hello")
+    assert len(results) == 1
+    assert index.search("foo") == []
+
+    index.add_document("doc1", "foo")
+    foo_results = index.search("foo")
+    assert len(foo_results) == 1
+    assert foo_results[0].doc_id == "doc1"
+
+def test_remove_document():
+
+    index = InvertedIndex()
+    index.add_document("doc1", "hello world")
+    index.add_document("doc2", "foo bar")
+
+    results = index.search("hello")
+    assert len(results) == 1
+
+    index.remove_document("doc1")
+    new_results = index.search("hello")
+    assert len(new_results) == 0
+
+    alt_results = index.search("foo")
+    assert len(alt_results) == 1
