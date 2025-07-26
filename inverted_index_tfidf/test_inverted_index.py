@@ -60,3 +60,32 @@ def test_multi_term_query_ranking():
     assert scores["doc4"] > scores["doc3"]
     assert scores["doc3"] > scores["doc1"]
 
+
+def test_max_results_limit():
+    index = InvertedIndex()
+    for i in range(100):
+        index.add_document(f"doc{i}", f"recipe {i}")
+
+    all_results = index.search("recipe")  # default is 10
+    assert len(all_results) == 10
+
+    limited_results = index.search("recipe", max_results=3)
+    assert len(limited_results) == 3
+
+    for i in range(2):
+        assert limited_results[i].score >= limited_results[i+1].score
+
+
+def test_empty_query_returns_empty_results():
+    index = InvertedIndex()
+    index.add_document("doc1", "hello world")
+    assert index.search("") == []
+    assert index.search("   ") == []
+
+    
+def test_non_matching_query_returns_empty_results():
+    index = InvertedIndex()
+    index.add_document("doc1", "hello world")
+    assert index.search("wow") == []
+    assert index.search("ok") == []
+
