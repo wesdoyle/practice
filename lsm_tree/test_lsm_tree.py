@@ -100,9 +100,34 @@ def test_scan_range_with_sstables_and_deletions():
     expected = [("b", "updated"), ("c", "3")]
     assert results == expected
 
+def test_end_to_end_workflow():
+    lsm = LSMTree(memtable_size_limit=3)
+    test_data = [("user_1", "alice"), ("user_2", "bob"), ("user_3", "angel")]
+    for k, v in test_data:
+        lsm.put(k, v)
 
+    lsm.put("user_1", "alice_v2")
+    lsm.put("user_4", "david")
+    lsm.put("user_5", "eve")
 
+    assert len(lsm.sstables) == 2  # at this point we should have two sstables
+    assert lsm.get("user_1") == "alice_v2"
+    assert lsm.get("user_5") == "eve"
 
+    lsm.delete("user_2")
+    lsm.put("user_6", "otto")
 
+    lsm.compact()
+    assert len(lsm.sstables) == 1
+
+    expected = [("user_1", "alice_v2"), ("user_3", "angel"), ("user_4", "david"), ("user_5", "eve"), ("user_6", "otto")]
+
+    for k, v in expected:
+        assert lsm.get(k) == v
+
+    assert lsm.get("user_2") is None
+
+    scan_results = lsm.scan("user_1", "user_6")
+    assert len(scan_results) == 5
 
 
