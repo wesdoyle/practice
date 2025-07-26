@@ -10,3 +10,4 @@ Interesting algorithms implemented for fun and practice, dependency-free, using 
 | --- | --- |
 | [Consistent Hash](./consistent_hash) | A simple implementation of a consistent hashing ring. |
 | [LSM Tree](./lsm_tree) | A simple implementation of a Log-Structured Merge-Tree. |
+| [Inverted Index](./inverted_index_tfidf) | A simple implementation of a search index with TF-IDF ranking. |
