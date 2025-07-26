@@ -50,6 +50,25 @@ class LSMTree:
 
         self.sstables = [compacted_data] if compacted_data else []
 
+    def scan(self, start_key: str, end_key: str) -> list[tuple[str,str]]:
+        """scans a range of keys, returning sorted k-v pairs"""
+        results: dict[str,str] = dict()
+
+        # collect data from sstables (oldest first, newest overrides)
+        for sstable in self.sstables:
+            for k, v in sstable.items():
+                if start_key <= k <= end_key:
+                    results[k] = v
+
+        # overwrite with current memtable data
+        for k, v in self._memtable.items():
+            if start_key <= k <= end_key:
+                results[k] = v
+
+        return [(k, v) for k, v in sorted(results.items()) if v != self.TOMBSTONE]
+
+
+
     def _flush_memtable(self):
         if self._memtable:
             sorted_data = dict(sorted(self.memtable.items()))

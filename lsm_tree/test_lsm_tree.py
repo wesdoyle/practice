@@ -62,6 +62,11 @@ def test_sstables_are_length_1_after_compaction():
     assert lsm.get("c") == "3"
 
 
+def test_compact_removes_tombstones():
+    lsm = LSMTree(memtable_size_limit=1)
+    lsm.put("key1", "v1")  # flush
+    lsm.delete("key1")     # flush
+    lsm.put("key2", "v2")  # flush
 
     assert len(lsm.sstables) == 3
 
@@ -71,3 +76,14 @@ def test_sstables_are_length_1_after_compaction():
     assert lsm.get("key1") is None
     assert lsm.get("key2") == "v2" 
 
+
+def test_can_scan_range():
+    lsm = LSMTree()
+    lsm.put("k1", "v1")
+    lsm.put("k2", "v2")
+    lsm.put("k3", "v3")
+    lsm.put("k4", "v4")
+
+    results = lsm.scan("k2", "k4")
+    expected = [("k2", "v2"), ("k3", "v3"), ("k4", "v4")]
+    assert results == expected
