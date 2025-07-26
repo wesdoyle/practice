@@ -20,3 +20,17 @@ def test_update_existing_key_overwrites_old_value():
     val = lsm.get(key)
     assert val == "world"
 
+def test_memtable_flush_when_full():
+    lsm = LSMTree(memtable_size_limit=3)
+    lsm.put("k1", "v1")
+    assert len(lsm.memtable) == 1
+
+    lsm.put("k2", "v2")
+    assert len(lsm.memtable) == 2
+
+    lsm.put("k3", "v3")
+    assert len(lsm.memtable) == 0
+
+    assert lsm.get("k1") == "v1"
+    assert lsm.get("k2") == "v2"
+    assert lsm.get("k3") == "v3"
