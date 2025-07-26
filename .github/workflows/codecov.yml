@@ -23,16 +23,15 @@ jobs:
           pip install -e .
 
       - name: Run tests and generate coverage report
-        run: pytest --cov --cov-report=xml --junitxml=junit.xml -o junit_family=legacy
+        run: pytest --cov
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload test reports to Codecov
         uses: codecov/test-results-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: wesdoyle/practice
-          files: ./coverage.xml
