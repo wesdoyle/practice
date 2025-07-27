@@ -28,6 +28,7 @@ def test_multi_docs_simple_ranking():
     doc_scores = {r.doc_id: r.score for r in results}
     assert doc_scores["doc2"] > doc_scores["doc1"]
 
+
 def test_idf_ranking_rare_terms_score_higher():
     index = InvertedIndex()
     index.add_document("doc1", "common word rose")
@@ -42,6 +43,7 @@ def test_idf_ranking_rare_terms_score_higher():
     common_score = common_results[0].score
 
     assert rose_score > common_score
+
 
 def test_multi_term_query_ranking():
     index = InvertedIndex()
@@ -73,7 +75,7 @@ def test_max_results_limit():
     assert len(limited_results) == 3
 
     for i in range(2):
-        assert limited_results[i].score >= limited_results[i+1].score
+        assert limited_results[i].score >= limited_results[i + 1].score
 
 
 def test_empty_query_returns_empty_results():
@@ -82,7 +84,7 @@ def test_empty_query_returns_empty_results():
     assert index.search("") == []
     assert index.search("   ") == []
 
-    
+
 def test_non_matching_query_returns_empty_results():
     index = InvertedIndex()
     index.add_document("doc1", "hello world")
@@ -103,6 +105,7 @@ def test_update_document():
     assert len(foo_results) == 1
     assert foo_results[0].doc_id == "doc1"
 
+
 def test_remove_document():
 
     index = InvertedIndex()
@@ -119,12 +122,13 @@ def test_remove_document():
     alt_results = index.search("foo")
     assert len(alt_results) == 1
 
+
 def test_get_stats():
     index = InvertedIndex()
     index.add_document("1", "vegetable gardening")
     index.add_document("2", "flower gardening")
     index.add_document("3", "diy gardening")
-    
+
     stats = index.get_stats()
     assert stats["total_documents"] == 3
     assert stats["total_terms"] == 4
@@ -136,7 +140,7 @@ def test_get_document_content():
     index.add_document("1", "vegetable gardening")
     index.add_document("2", "flower gardening")
     index.add_document("3", "diy gardening")
-    
+
     doc1_content = index.get_document_content("1")
     assert doc1_content == "vegetable gardening"
 
@@ -145,6 +149,7 @@ def test_get_document_content():
 
     doc3_content = index.get_document_content("3")
     assert doc3_content == "diy gardening"
+
 
 def test_tokenization_edge_cases():
     index = InvertedIndex()
@@ -157,4 +162,3 @@ def test_tokenization_edge_cases():
 
     caps_results = index.search("gardening")
     assert len(caps_results) == 3
-

@@ -72,7 +72,7 @@ class InvertedIndex:
         return {
             "total_documents": len(self._documents),
             "total_terms": len(self._index),
-            "vocab_size": len(self._index)
+            "vocab_size": len(self._index),
         }
 
     def get_document_content(self, doc_id: str) -> str:
@@ -90,12 +90,14 @@ class InvertedIndex:
 
             # IDF
             docs_with_term = len(self._index[term])
-            idf = math.log((1 + total_docs) / docs_with_term) if docs_with_term > 0 else 0
+            idf = (
+                math.log((1 + total_docs) / docs_with_term) if docs_with_term > 0 else 0
+            )
             score += tf * idf
 
         return score
 
     def _tokenize(self, text: str) -> list[str]:
         """Naive whitespace tokenization and lowercasing"""
-        text = re.sub(r'[^\w\s]', ' ', text.lower())
+        text = re.sub(r"[^\w\s]", " ", text.lower())
         return [token for token in text.split() if token]
