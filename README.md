@@ -13,3 +13,4 @@ Interesting algorithms and data structures implemented for fun and practice, dep
 | [Consistent Hash](./consistent_hash) | A simple implementation of a consistent hashing ring. |
 | [LSM Tree](./lsm_tree) | A simple implementation of a Log-Structured Merge-Tree. |
 | [Inverted Index](./inverted_index_tfidf) | A simple implementation of a search index with TF-IDF ranking. |
+| [Bloom Filter](./bloom_filter) | A simple implementation of a bloom filter. |

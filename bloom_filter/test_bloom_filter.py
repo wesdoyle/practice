@@ -9,3 +9,4 @@ def test_contains_gets_added_item():
     bf = BloomFilter()
     bf.add("foo")
     assert bf.contains("foo")
+    assert not bf.contains("bar")
