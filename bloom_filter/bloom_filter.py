@@ -1,6 +1,10 @@
 class BloomFilter:
+
     def __init__(self):
-        pass
+        self._items = set()
 
     def contains(self, key: str):
-        pass
+        return key in self._items
+
+    def add(self, key: str):
+        self._items.add(key)
