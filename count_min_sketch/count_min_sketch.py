@@ -15,7 +15,7 @@ class CountMinSketch:
     def __init__(self, width: int = 100, depth: int = 4):
         self._width = width
         self._depth = depth
-        self._matrix = [bytearray(width) for _ in range(depth)]
+        self._matrix = [[0] * width for _ in range(depth)]
 
     def _hash(self, key: str | bytes, seed: str | int):
         if isinstance(key, str):
@@ -39,5 +39,4 @@ class CountMinSketch:
     def add(self, key: str, count:int=1):
         for row in range(self._depth):
             col = self._hash(key, row)
-            new_val = min(self._matrix[row][col] + count, 255)
-            self._matrix[row][col] = new_val
+            self._matrix[row][col] += count

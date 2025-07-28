@@ -80,3 +80,22 @@ def test_heavy_hitters_detection():
         assert estimated <= 20, f"Regular item {item} estimated too high: {estimated}"
 
 
+def test_handle_counts_greater_than_255():
+    """
+    This test highlights that the current bytearray implementation
+    caps counts at 255, which can lead to underestimation for
+    very frequent items.
+    """
+    cms = CountMinSketch(width=1000, depth=4)
+    item = "very_frequent_item"
+    true_count = 300
+
+    for _ in range(true_count):
+        cms.add(item)
+
+    estimated_freq = cms.frequency(item)
+
+    # This assertion is expected to fail with the current implementation
+    assert estimated_freq >= true_count
+
+
