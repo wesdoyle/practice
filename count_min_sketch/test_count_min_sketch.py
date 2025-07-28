@@ -1,3 +1,4 @@
+import pytest
 from .count_min_sketch import CountMinSketch
 
 
@@ -34,6 +35,22 @@ def test_can_create_with_width_and_depth_params():
     cms = CountMinSketch(width=1_000, depth=4)
     cms.add("test")
     assert cms.frequency("test") == 1
+
+def test_init_with_invalid_params_raises_error():
+    """Test that creating a CMS with invalid width or depth raises ValueError."""
+    with pytest.raises(ValueError, match="width must be a positive integer"):
+        CountMinSketch(width=0, depth=5)
+    with pytest.raises(ValueError, match="width must be a positive integer"):
+        CountMinSketch(width=-1, depth=5)
+    with pytest.raises(ValueError, match="width must be a positive integer"):
+        CountMinSketch(width=10.5, depth=5)
+    
+    with pytest.raises(ValueError, match="depth must be a positive integer"):
+        CountMinSketch(width=100, depth=0)
+    with pytest.raises(ValueError, match="depth must be a positive integer"):
+        CountMinSketch(width=100, depth=-1)
+    with pytest.raises(ValueError, match="depth must be a positive integer"):
+        CountMinSketch(width=100, depth=4.5)
 
 def test_never_underestimates_frequency():
     cms = CountMinSketch(width=1_000, depth=3)
