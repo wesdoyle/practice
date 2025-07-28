@@ -8,8 +8,10 @@ class CountMinSketch:
     - Configurable accuracy vs memory trade-off
     - Uses multiple hash functions and takes minimum across rows
     """
-    def __init__(self):
+    def __init__(self, width: int = 100, depth: int = 4):
         self._counts = dict()
+        self._width = width
+        self._depth = depth
 
     def frequency(self, key: str) -> int:
         return self._counts.get(key, 0)
