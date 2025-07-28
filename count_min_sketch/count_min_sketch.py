@@ -13,7 +13,6 @@ class CountMinSketch:
     """
 
     def __init__(self, width: int = 100, depth: int = 4):
-        self._counts = dict()
         self._width = width
         self._depth = depth
         self._matrix = [bytearray(width) for _ in range(depth)]
