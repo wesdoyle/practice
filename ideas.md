@@ -10,7 +10,7 @@
 [] merkle tree
 [] quadtree spatial partitioning
 [] rope data structure
-[] count-min sketch
+[x] count-min sketch
 [] cuckoo hashing
 [] huffman coding
 [] rle variants
