@@ -9,7 +9,10 @@ class CountMinSketch:
     - Uses multiple hash functions and takes minimum across rows
     """
     def __init__(self):
-        pass
+        self._counts = dict()
 
-    def frequency(self, key: str):
-        return 0
+    def frequency(self, key: str) -> int:
+        return self._counts.get(key, 0)
+
+    def add(self, key: str):
+        self._counts[key] = self._counts.get(key, 0) + 1
