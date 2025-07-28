@@ -1,4 +1,5 @@
 import hashlib
+import array
 
 
 class CountMinSketch:
@@ -15,7 +16,7 @@ class CountMinSketch:
     def __init__(self, width: int = 100, depth: int = 4):
         self._width = width
         self._depth = depth
-        self._matrix = [[0] * width for _ in range(depth)]
+        self._matrix = [array.array('L', [0] * width) for _ in range(depth)]
 
     def _hash(self, key: str | bytes, seed: str | int):
         if isinstance(key, str):
