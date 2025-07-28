@@ -87,9 +87,7 @@ class BloomFilter:
         for h in hash_vals:
             self._set_bit(h)
 
-    def _calculate_optimal_size(
-        self, capacity: int, false_pos_rate: float
-    ) -> int:
+    def _calculate_optimal_size(self, capacity: int, false_pos_rate: float) -> int:
         """
         Calculate the optimal bit array size (m) for a Bloom filter.
 
