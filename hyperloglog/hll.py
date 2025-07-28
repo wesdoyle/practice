@@ -44,21 +44,28 @@ class HyperLogLog:
             return 0
 
         # basic hll formula alpha * m^2 / sum(2^(-bucket_value))
-        raw_est = self._alpha() * (self._num_buckets ** 2) / sum(2**(-bucket) for bucket in self._buckets)
+        raw_est = (
+            self._alpha()
+            * (self._num_buckets**2)
+            / sum(2 ** (-bucket) for bucket in self._buckets)
+        )
 
         # Small range correction from the paper
         if raw_est <= 2.5 * self._num_buckets:
             zero_buckets = self._buckets.count(0)
             if zero_buckets != 0:
                 # LinearCounting
-                return int(self._num_buckets * math.log(self._num_buckets / float(zero_buckets)))
+                return int(
+                    self._num_buckets
+                    * math.log(self._num_buckets / float(zero_buckets))
+                )
 
         return int(raw_est)
 
     def _alpha(self) -> float:
         """
         Calculates the alpha constant based on number of buckets
-        These are heuristics specified in the HyperLogLog paper 
+        These are heuristics specified in the HyperLogLog paper
         "HyperLogLog: the analysis of a near-optimal cardinality estimation algorithm"
         Flajolet, Fusy, Gandouet, and Meunier
         (https://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf)
@@ -85,4 +92,3 @@ class HyperLogLog:
 
         # update bucket with max leading zeros seen
         self._buckets[bucket_index] = max(self._buckets[bucket_index], clamped_zeros)
-

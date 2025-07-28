@@ -1,6 +1,7 @@
 from .hll import HyperLogLog
 import pytest
 
+
 def test_can_create_hyperloglog():
     hll = HyperLogLog()
     assert hll is not None
@@ -10,11 +11,13 @@ def test_estimates_cardinality_of_empty_set():
     hll = HyperLogLog()
     assert hll.cardinality == 0
 
+
 def test_can_add_item_and_estimate_cardinality():
     hll = HyperLogLog()
     hll.add("foo")
     cardinality = hll.cardinality
     assert cardinality == pytest.approx(1, abs=1)
+
 
 def test_adding_multiple_items_increases_cardinality():
     hll = HyperLogLog()
@@ -29,6 +32,7 @@ def test_adding_multiple_items_increases_cardinality():
     new_cardinality = hll.cardinality
     assert new_cardinality == pytest.approx(5, abs=1)
 
+
 def test_adding_duplicate_items_doesnt_increase_cardinality():
     hll = HyperLogLog()
     hll.add("foo")
@@ -38,6 +42,7 @@ def test_adding_duplicate_items_doesnt_increase_cardinality():
         hll.add("foo")
     new_cardinality = hll.cardinality
     assert new_cardinality == pytest.approx(1, abs=1)
+
 
 def test_uses_fixed_memory():
     hll = HyperLogLog()
@@ -54,10 +59,12 @@ def test_cardinality_large_number_of_items():
 
     # expected error is approx 1.04 / sqrt(2^precision)
     # for p=10, m=1024, error = 1.04 / 32 = 0.0325
-    error_margin = 0.1 
-    
+    error_margin = 0.1
+
     cardinality = hll.cardinality
-    assert num_items * (1 - error_margin) <= cardinality <= num_items * (1 + error_margin)
+    assert (
+        num_items * (1 - error_margin) <= cardinality <= num_items * (1 + error_margin)
+    )
 
 
 def test_precision_parameter_affects_buckets():
@@ -70,9 +77,9 @@ def test_precision_parameter_affects_buckets():
 
 def test_accuracy_improves_with_precision():
     num_items = 10_000
-    
-    hll_p4 = HyperLogLog(precision=4) # lower precision
-    hll_p12 = HyperLogLog(precision=12) # higher precision
+
+    hll_p4 = HyperLogLog(precision=4)  # lower precision
+    hll_p12 = HyperLogLog(precision=12)  # higher precision
 
     for i in range(num_items):
         item = f"item{i}"
