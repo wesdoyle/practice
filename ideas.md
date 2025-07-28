@@ -4,7 +4,7 @@
 [] b+ tree
 [] skip list with probabilistic balancing
 [] suffix tree
-[] hll (hyperloglog)
+[x] hyperloglog
 [x] bloom filter
 [] r-tree spatial index
 [] merkle tree
