@@ -9,7 +9,10 @@ class HyperLogLog:
     - Uses hash functions and statistical properties of bit patterns
     """
     def __init__(self):
-        pass
+        self._items = set()
 
     def cardinality(self) -> int:
-        return 0
+        return len(self._items) 
+
+    def add(self, item: str) -> None:
+        self._items.add(item)
