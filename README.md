@@ -15,3 +15,4 @@ Interesting algorithms and data structures implemented for fun and practice.
 | [Inverted Index](./inverted_index_tfidf) | A simple implementation of a search index with TF-IDF ranking. |
 | [Bloom Filter](./bloom_filter) | A simple implementation of a bloom filter. |
 | [HyperLogLog](./hyperloglog) | A simple implementation of HyperLogLog for estimating the cardinality of a set. |
+| [Count Min Sketch](./count_min_sketch) | A simple implementation of Count Min Sketch for estimating frequency. |
