@@ -21,12 +21,11 @@ class CountMinSketch:
 
         self._width = width
         self._depth = depth
-        self._matrix = [array.array('L', [0] * width) for _ in range(depth)]
+        self._matrix = [array.array("L", [0] * width) for _ in range(depth)]
 
     def _hash(self, encoded_key: bytes, seed: int) -> int:
         hash_input = encoded_key + str(seed).encode("utf-8")
         return int(hashlib.sha256(hash_input).hexdigest(), 16) % self._width
-
 
     def frequency(self, key: str) -> int:
         encoded_key = key.encode("utf-8")
@@ -36,8 +35,7 @@ class CountMinSketch:
             estimates.append(self._matrix[row][col])
         return min(estimates)
 
-
-    def add(self, key: str, count:int=1):
+    def add(self, key: str, count: int = 1):
         encoded_key = key.encode("utf-8")
         for row in range(self._depth):
             col = self._hash(encoded_key, row)

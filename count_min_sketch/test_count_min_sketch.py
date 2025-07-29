@@ -36,6 +36,7 @@ def test_can_create_with_width_and_depth_params():
     cms.add("test")
     assert cms.frequency("test") == 1
 
+
 def test_init_with_invalid_params_raises_error():
     """Test that creating a CMS with invalid width or depth raises ValueError."""
     with pytest.raises(ValueError, match="width must be a positive integer"):
@@ -44,7 +45,7 @@ def test_init_with_invalid_params_raises_error():
         CountMinSketch(width=-1, depth=5)
     with pytest.raises(ValueError, match="width must be a positive integer"):
         CountMinSketch(width=10.5, depth=5)
-    
+
     with pytest.raises(ValueError, match="depth must be a positive integer"):
         CountMinSketch(width=100, depth=0)
     with pytest.raises(ValueError, match="depth must be a positive integer"):
@@ -52,12 +53,13 @@ def test_init_with_invalid_params_raises_error():
     with pytest.raises(ValueError, match="depth must be a positive integer"):
         CountMinSketch(width=100, depth=4.5)
 
+
 def test_never_underestimates_frequency():
     cms = CountMinSketch(width=1_000, depth=3)
     items_and_counts = [
-            ("foo", 1),
-            ("bar", 24),
-            ("baz", 101),
+        ("foo", 1),
+        ("bar", 24),
+        ("baz", 101),
     ]
 
     for item, count in items_and_counts:
@@ -73,23 +75,23 @@ def test_never_underestimates_frequency():
 def test_heavy_hitters_detection():
     """Test that CMS can identify heavy hitters (most frequent items)."""
     cms = CountMinSketch(width=1000, depth=4)
-    
+
     # create a distribution with clear heavy hitters
     heavy_hitters = [("popular1", 100), ("popular2", 80), ("popular3", 60)]
     regular_items = [(f"item_{i}", 1) for i in range(50)]
-    
+
     all_items = heavy_hitters + regular_items
-    
+
     for item, count in all_items:
         for _ in range(count):
             cms.add(item)
-    
+
     # heavy hitters should have much higher estimated frequencies
     for item, true_count in heavy_hitters:
         estimated = cms.frequency(item)
         assert estimated >= true_count, f"Heavy hitter {item} underestimated"
         assert estimated >= 50, f"Heavy hitter {item} should have high frequency"
-    
+
     # regular items should have low frequencies
     for item, true_count in regular_items[:10]:  # Sample check
         estimated = cms.frequency(item)
@@ -114,5 +116,3 @@ def test_handle_counts_greater_than_255():
 
     # This assertion is expected to fail with the current implementation
     assert estimated_freq >= true_count
-
-
