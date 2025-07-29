@@ -2,7 +2,7 @@
 [x] lsm tree
 [x] inverted index with ranking
 [] b+ tree
-[] skip list with probabilistic balancing
+[x] skip list with probabilistic balancing
 [] suffix tree
 [x] hyperloglog
 [x] bloom filter

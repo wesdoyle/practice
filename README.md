@@ -16,3 +16,4 @@ Interesting algorithms and data structures implemented for fun and practice.
 | [Bloom Filter](./bloom_filter) | A simple implementation of a bloom filter. |
 | [HyperLogLog](./hyperloglog) | A simple implementation of HyperLogLog for estimating the cardinality of a set. |
 | [Count Min Sketch](./count_min_sketch) | A simple implementation of Count Min Sketch for estimating frequency. |
+| [Skip List](./skip_list/) | A simple implementation of Skip List for efficient retrieval. |
