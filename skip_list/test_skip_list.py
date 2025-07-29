@@ -16,3 +16,13 @@ def test_can_insert_and_find_items():
     sl.insert("foo")
     assert sl.contains("foo")
 
+def test_maintains_sorted_order_of_keys():
+    sl = SkipList()
+    items = [0,9,3,7,2]
+    for item in items:
+        sl.insert(item)
+    sorted_items = sl.to_list()
+    expected = [0,2,3,7,9]
+    assert sorted_items == expected
+
+
